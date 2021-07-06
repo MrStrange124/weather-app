@@ -3,9 +3,6 @@ const express = require('express')
 const hbs = require('hbs')
 const geocode = require('./utils/geocode')
 const forecast = require('./utils/forecast')
-const fs = require('fs')
-const keysBuffer = fs.readFileSync('./src/credential.json', 'utf8')
-const { mapboxApiKey, weatherApiKey } = JSON.parse(keysBuffer)
 
 
 const app = express()
@@ -51,11 +48,11 @@ app.get('/weather', (req, res) => {
     return res.send({ error: 'Please provide an Address.' })
   }
   const location = req.query.address
-  geocode(location, mapboxApiKey, (error, { latitude, longitude, location } = {}) => {
+  geocode(location, process.env.mapboxApiKey, (error, { latitude, longitude, location } = {}) => {
     if (error)
       return res.send({ error })
 
-    forecast(latitude, longitude, weatherApiKey, (error, forecastData) => {
+    forecast(latitude, longitude, process.env.weatherApiKey, (error, forecastData) => {
       if (error)
         return res.send({ error })
 
